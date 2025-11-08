@@ -57,9 +57,17 @@
       let photoData = canvas.toDataURL();
       let timestamp = new Date().toLocaleString();
 
-      // SEND DATA TO GOOGLE SHEETS (Placeholder)
-      console.log({ name, roll, className, photoData, timestamp });
-      alert('Attendance Submitted (Google Sheet integration coming next).');
+      // SEND DATA TO GOOGLE SHEETS
+      fetch('https://script.google.com/macros/s/AKfycbx-lkFpKfcIWZSiw-5DkSAxkxFPVyT9K99wO9MZ-HAjxnBj319YQmzvdmg14gKo_uKp/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, roll, className, photo: photoData })
+      });
+
+      alert('Attendance Submitted Successfully!');('Attendance Submitted (Google Sheet integration coming next).');
     });
   </script>
 </body>
