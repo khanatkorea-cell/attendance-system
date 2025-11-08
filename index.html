@@ -27,7 +27,6 @@
     <video id="camera" autoplay playsinline width="300"></video>
     <canvas id="snapshot" width="300" height="200" style="display:none;"></canvas><br>
 
-    
     <button type="submit">Submit Attendance (Photo Auto-Captured)</button>
   </form>
 
@@ -39,25 +38,24 @@
       })
       .catch(err => console.error('Camera Error:', err));
 
-    
-    // Auto-capture photo on submit
-    let video = document.getElementById('camera');
-    let canvas = document.getElementById('snapshot');
-    let ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Submit Attendance
     document.getElementById('attendanceForm').addEventListener('submit', function(e){
       e.preventDefault();
 
+      let video = document.getElementById('camera');
+      let canvas = document.getElementById('snapshot');
+      let ctx = canvas.getContext('2d');
+
+      // ✅ Capture photo at the moment of submit
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
       let name = document.getElementById('name').value;
       let roll = document.getElementById('roll').value;
       let className = document.getElementById('class').value;
-      let canvas = document.getElementById('snapshot');
-      let photoData = canvas.toDataURL();
-      let timestamp = new Date().toLocaleString();
+      let photoData = canvas.toDataURL("image/png");
 
-      // SEND DATA TO GOOGLE SHEETS
+      // ✅ Send data to Google Apps Script
       fetch('https://script.google.com/macros/s/AKfycbx-lkFpKfcIWZSiw-5DkSAxkxFPVyT9K99wO9MZ-HAjxnBj319YQmzvdmg14gKo_uKp/exec', {
         method: 'POST',
         mode: 'no-cors',
@@ -67,7 +65,7 @@
         body: JSON.stringify({ name, roll, className, photo: photoData })
       });
 
-      alert('Attendance Submitted Successfully!');('Attendance Submitted (Google Sheet integration coming next).');
+      alert('Attendance Submitted Successfully!');
     });
   </script>
 </body>
