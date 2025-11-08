@@ -4,15 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>School Attendance System</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Diagonal full-page watermark */
+    #textLogo {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 80px;       /* big font */
+      font-weight: bold;
+      color: rgba(0,0,0,0.1); /* faint but visible */
+      text-align: center;
+      z-index: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      width: 100%;
+    }
+
+    /* Attendance Form styling */
+    #attendanceForm {
+      background: rgba(255, 255, 255, 0.75); /* semi-transparent so watermark is visible */
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      margin: 60px auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 24px;
+      color: #000;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0 15px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    video {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+      display: block;
+      margin: 10px auto;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    @media (max-width: 500px) {
+      #textLogo {
+        font-size: 50px; /* scale for mobile */
+      }
+      h2 {
+        font-size: 20px;
+      }
+      input, select, button {
+        font-size: 14px;
+        padding: 8px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <!-- Diagonal Watermark -->
+  <div id="textLogo">G.P.S KHANJAR MARDAN (EMIS 18877)</div>
+
   <h2>Student Attendance Form</h2>
+
   <form id="attendanceForm">
     <label>Student Name:</label>
-    <input type="text" id="name" required><br><br>
+    <input type="text" id="name" required>
 
     <label>Roll Number:</label>
-    <input type="text" id="roll" required><br><br>
+    <input type="text" id="roll" required>
 
     <label>Class:</label>
     <select id="class" required>
@@ -22,30 +120,27 @@
       <option value="Class 3">Class 3</option>
       <option value="Class 4">Class 4</option>
       <option value="Class 5">Class 5</option>
-    </select><br><br>
+    </select>
 
-    <video id="camera" autoplay playsinline width="300"></video>
-    <canvas id="snapshot" width="300" height="200" style="display:none;"></canvas><br>
+    <video id="camera" autoplay playsinline></video>
+    <canvas id="snapshot"></canvas>
 
     <button type="submit">Submit Attendance (Photo Auto-Captured)</button>
   </form>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbxg5uxLaestEm4Yt_fLX2ZY5htlLOkwDhREpLTO0TAso05tR6MKfx6KVTxBtW0hePii/exec";
+    const video = document.getElementById('camera');
 
     // Start Camera
-    const video = document.getElementById('camera');
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      })
+      .then(stream => { video.srcObject = stream; })
       .catch(err => console.error('Camera Error:', err));
 
     // Submit Attendance
     document.getElementById('attendanceForm').addEventListener('submit', function(e){
       e.preventDefault();
 
-      // Capture photo at submit time
       const canvas = document.getElementById('snapshot');
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -58,7 +153,6 @@
         photo: photoData
       };
 
-      // Send data to Google Apps Script
       fetch(scriptURL, {
         method: "POST",
         body: JSON.stringify(data)
@@ -66,14 +160,14 @@
       .then(response => response.json())
       .then(result => {
         if(result.status === "success") {
-          alert("Attendance Submitted! Photo URL: " + result.url);
+          alert("Attendance Submitted! Photo saved.");
           document.getElementById('attendanceForm').reset();
         } else {
-          alert("Error submitting attendance: " + result.message);
+          alert("Error: " + result.message);
         }
       })
       .catch(error => {
-        alert("Error submitting attendance: " + error);
+        alert("Submission Error: " + error);
       });
     });
   </script>
