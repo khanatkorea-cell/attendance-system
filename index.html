@@ -10,10 +10,14 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
+      /* Background logo image */
+      background: url('/mnt/data/6ebfb556-0ca5-4037-9162-4f5e559222ce.jpg') no-repeat center center fixed;
+      background-size: contain; /* scale to fit screen */
       background-color: #f2f2f2;
+      overflow-x: hidden;
     }
 
-    /* Full-page wrapper with watermark */
+    /* Wrapper for form and watermark */
     .wrapper {
       min-height: 100vh;
       display: flex;
@@ -21,16 +25,10 @@
       align-items: center;
       position: relative;
       text-align: center;
-      background: repeating-linear-gradient(
-        -30deg,
-        rgba(0,0,0,0.05),
-        rgba(0,0,0,0.05) 1px,
-        transparent 1px,
-        transparent 50px
-      ); /* faint diagonal watermark lines */
+      padding: 20px;
     }
 
-    /* Single watermark text behind form */
+    /* Text Logo watermark */
     .watermark {
       position: absolute;
       top: 50%;
@@ -38,20 +36,20 @@
       transform: translate(-50%, -50%) rotate(-30deg);
       font-size: 60px;
       font-weight: bold;
-      color: rgba(0,0,0,0.05);
+      color: rgba(0,0,0,0.1);
       pointer-events: none;
       white-space: nowrap;
       width: 100%;
       z-index: 0;
     }
 
-    /* Attendance form */
+    /* Attendance form styling */
     #attendanceForm {
-      background: rgba(255,255,255,0.8); /* semi-transparent */
+      background: rgba(255, 255, 255, 0.85); /* semi-transparent */
       padding: 20px;
       border-radius: 12px;
       max-width: 400px;
-      width: 90%;
+      width: 100%;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
       position: relative;
       z-index: 1;
@@ -96,6 +94,7 @@
       display: none;
     }
 
+    /* Mobile adjustments */
     @media (max-width: 500px) {
       .watermark {
         font-size: 40px;
@@ -107,13 +106,16 @@
         font-size: 14px;
         padding: 8px;
       }
+      video {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="wrapper">
-    <!-- Watermark -->
+    <!-- Watermark text -->
     <div class="watermark">G.P.S KHANJAR MARDAN (EMIS 18877)</div>
 
     <form id="attendanceForm">
