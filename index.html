@@ -31,10 +31,13 @@
   </form>
 
   <script>
-    // Start camera
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxg5uxLaestEm4Yt_fLX2ZY5htlLOkwDhREpLTO0TAso05tR6MKfx6KVTxBtW0hePii/exec";
+
+    // Start Camera
+    const video = document.getElementById('camera');
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
-        document.getElementById('camera').srcObject = stream;
+        video.srcObject = stream;
       })
       .catch(err => console.error('Camera Error:', err));
 
@@ -42,8 +45,37 @@
     document.getElementById('attendanceForm').addEventListener('submit', function(e){
       e.preventDefault();
 
-      let video = document.getElementById('camera');
-      let canvas = document.getElementById('snapshot');
-      let ctx = canvas.getContext('2d');
-      ctx.drawImage(video,
+      // Capture photo at submit time
+      const canvas = document.getElementById('snapshot');
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const photoData = canvas.toDataURL('image/png');
 
+      const data = {
+        name: document.getElementById('name').value,
+        roll: document.getElementById('roll').value,
+        class: document.getElementById('class').value,
+        photo: photoData
+      };
+
+      // Send data to Google Apps Script
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if(result.status === "success") {
+          alert("Attendance Submitted! Photo URL: " + result.url);
+          document.getElementById('attendanceForm').reset();
+        } else {
+          alert("Error submitting attendance: " + result.message);
+        }
+      })
+      .catch(error => {
+        alert("Error submitting attendance: " + error);
+      });
+    });
+  </script>
+</body>
+</html>
