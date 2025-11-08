@@ -31,13 +31,12 @@
   </form>
 
   <script>
-    // Start Camera
+    // Start camera
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         document.getElementById('camera').srcObject = stream;
       })
       .catch(err => console.error('Camera Error:', err));
-
 
     // Submit Attendance
     document.getElementById('attendanceForm').addEventListener('submit', function(e){
@@ -46,27 +45,4 @@
       let video = document.getElementById('camera');
       let canvas = document.getElementById('snapshot');
       let ctx = canvas.getContext('2d');
-
-      // ✅ Capture photo at the moment of submit
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      let name = document.getElementById('name').value;
-      let roll = document.getElementById('roll').value;
-      let className = document.getElementById('class').value;
-      let photoData = canvas.toDataURL("image/png");
-
-      // ✅ Send data to Google Apps Script
-      fetch('https://script.google.com/macros/s/AKfycbx-lkFpKfcIWZSiw-5DkSAxkxFPVyT9K99wO9MZ-HAjxnBj319YQmzvdmg14gKo_uKp/exec', {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, roll, className, photo: photoData })
-      });
-
-      alert('Attendance Submitted Successfully!');
-    });
-  </script>
-</body>
-</html>
+      ctx.drawImage(video,
